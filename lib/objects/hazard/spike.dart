@@ -1,23 +1,24 @@
-import 'dart:async';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
+import '../../Flutter_Game.dart';
 
-import '../Flutter_Game.dart';
-
-class PlatformBlock extends SpriteComponent with HasGameRef<Flame_Game> {
-  final Vector2 velocity = Vector2.zero();
+class Spike extends SpriteComponent
+    with HasGameRef<Flame_Game> {
   final Vector2 gridPosition;
   double xOffset;
 
-  PlatformBlock({required this.gridPosition, required this.xOffset})
-      : super(size: Vector2.all(64), anchor: Anchor.bottomLeft);
+  final Vector2 velocity = Vector2.zero();
+
+  Spike({
+    required this.gridPosition,
+    required this.xOffset,
+  }) : super(size: Vector2.all(64), anchor: Anchor.bottomLeft);
 
   @override
   void onLoad() {
-    final platformImage = game.images.fromCache('platform.png');
-    sprite = Sprite(platformImage);
+    final spriteImage = game.images.fromCache('spike.png');
+    sprite = Sprite(spriteImage);
     position = Vector2((gridPosition.x * size.x) + xOffset,
         game.size.y - (gridPosition.y * size.y));
     add(RectangleHitbox()..collisionType = CollisionType.passive);
