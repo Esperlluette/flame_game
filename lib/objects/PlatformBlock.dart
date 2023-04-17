@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
-
 import '../Flutter_Game.dart';
 
 class PlatformBlock extends SpriteComponent with HasGameRef<Flame_Game> {
@@ -28,6 +27,11 @@ class PlatformBlock extends SpriteComponent with HasGameRef<Flame_Game> {
     velocity.x = game.objectSpeed;
     position += velocity * dt;
     if (position.x < -size.x) removeFromParent();
+
+    if (position.x < -size.x || game.health <= 0) {
+      removeFromParent();
+    }
+
     super.update(dt);
   }
 }

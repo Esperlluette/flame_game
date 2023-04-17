@@ -1,6 +1,9 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame_game/objects/GroundBlock.dart';
+import 'package:flame_game/objects/Star.dart';
+import 'package:flame_game/objects/hazard/Spike.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 import 'package:flutter/services.dart';
 
@@ -13,13 +16,15 @@ class GamePlayer extends SpriteAnimationComponent
   final double jumpSpeed = 600;
   final double terminalvelocity = 150;
 
+  bool hitByEnemy = false;
+
   bool hasJumped = false;
 
   final Vector2 fromAbove = Vector2(0, -1);
   bool isOnGround = false;
   final Vector2 velocity = Vector2.zero();
   final double moveSpeed = 200;
-  int horizontalDirction = 0;
+  int horizontalDirection = 0;
   GamePlayer({
     required super.position,
   }) : super(size: Vector2.all(64), anchor: Anchor.center);
@@ -48,25 +53,36 @@ class GamePlayer extends SpriteAnimationComponent
         position += collisionNormal.scaled(separationDistance);
       }
     }
+    if (other is Star) {
+      other.removeFromParent();
+      game.starsCollected++;
+    }
+    if (other is Spike) {
+      hit();
+      if (game.health <= 0) {
+        // gameOver();
+      }
+    }
 
     super.onCollision(intersectionPoints, other);
   }
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    horizontalDirction = 0;
+    horizontalDirection = 0;
 
-    horizontalDirction -= (keysPressed.contains(LogicalKeyboardKey.keyQ) ||
+    horizontalDirection -= (keysPressed.contains(LogicalKeyboardKey.keyQ) ||
             keysPressed.contains(LogicalKeyboardKey.arrowLeft))
         ? 1
         : 0;
 
-    horizontalDirction += (keysPressed.contains(LogicalKeyboardKey.keyD) ||
+    horizontalDirection += (keysPressed.contains(LogicalKeyboardKey.keyD) ||
             keysPressed.contains(LogicalKeyboardKey.arrowRight))
         ? 1
         : 0;
 
-    hasJumped = (keysPressed.contains(LogicalKeyboardKey.space)||keysPressed.contains(LogicalKeyboardKey.arrowUp));
+    hasJumped = (keysPressed.contains(LogicalKeyboardKey.space) ||
+        keysPressed.contains(LogicalKeyboardKey.arrowUp));
     return true;
   }
 
@@ -77,14 +93,35 @@ class GamePlayer extends SpriteAnimationComponent
         SpriteAnimationData.sequenced(
             amount: 2, stepTime: 0.12, textureSize: Vector2.all(16)));
     add(
-      RectangleHitbox()..collisionType = CollisionType.active,
+      CircleHitbox()..collisionType = CollisionType.active,
     );
   }
 
   @override
   void update(double dt) {
-    velocity.x = horizontalDirction * moveSpeed;
+    velocity.x = horizontalDirection * moveSpeed;
     position += velocity * dt;
+
+    if (position.x - 36 <= 0 && horizontalDirection < 0) {
+      velocity.x = 0;
+    }
+
+    if (position.x + 64 >= game.size.x / 2 && horizontalDirection > 0) {
+      game.scroll = true;
+      if (game.scroll) {
+        velocity.x = -1;
+        game.objectSpeed = -moveSpeed / 2;
+      }
+    }
+
+    // If ember fell in pit, then game over.
+    if (position.y > game.size.y + size.y) {
+      game.health = 0;
+    }
+
+    if (game.health <= 0) {
+      removeFromParent();
+    }
 
     flipSprite();
     jump();
@@ -98,9 +135,9 @@ class GamePlayer extends SpriteAnimationComponent
   }
 
   void flipSprite() {
-    if (horizontalDirction < 0 && scale.x > 0) {
+    if (horizontalDirection < 0 && scale.x > 0) {
       flipHorizontally();
-    } else if (horizontalDirction > 0 && scale.x < 0) {
+    } else if (horizontalDirection > 0 && scale.x < 0) {
       flipHorizontally();
     }
   }
@@ -115,5 +152,23 @@ class GamePlayer extends SpriteAnimationComponent
       hasJumped = true;
     }
     velocity.y = velocity.y.clamp(-jumpSpeed, terminalvelocity);
+  }
+
+  void hit() {
+    if (!hitByEnemy) {
+      game.health--;
+      hitByEnemy = true;
+    }
+    add(
+      OpacityEffect.fadeOut(
+        EffectController(
+          alternate: true,
+          duration: 0.1,
+          repeatCount: 6,
+        ),
+      )..onComplete = () {
+          hitByEnemy = false;
+        },
+    );
   }
 }

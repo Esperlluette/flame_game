@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 
 import '../Flutter_Game.dart';
 
-class Heart extends SpriteComponent with HasGameRef<Flame_Game> {
+class Star extends SpriteComponent with HasGameRef<Flame_Game> {
   final Vector2 gridPosition;
   double xOffset;
 
   final Vector2 velocity = Vector2.zero();
 
-  Heart({
+  Star({
     required this.gridPosition,
     required this.xOffset,
   }) : super(size: Vector2.all(64), anchor: Anchor.center);
@@ -34,10 +34,13 @@ class Heart extends SpriteComponent with HasGameRef<Flame_Game> {
   }
 
   @override
-  void update(double dt){
-    velocity.x = game.objectSpeed; 
-    position += velocity *dt; 
-    if (position.x < -size.x) removeFromParent(); 
+  void update(double dt) {
+    velocity.x = game.objectSpeed;
+    position += velocity * dt;
+    if (position.x < -size.x) removeFromParent();
+    if (position.x < -size.x || game.health <= 0) {
+      removeFromParent();
+    }
     super.update(dt);
   }
 }

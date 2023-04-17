@@ -1,16 +1,11 @@
-# flame_game
+# Duck Race 
 
-A new Flutter project.
+A flutter game using Flame engine.
 
-## Getting Started
+Improvements : 
+- Randomize segments generation using procedural generation. 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Known issues : 
+- Hearts HUD not updating when duck takes damages. 
+- Duck slide when the screen scroll
+- the screen does not stop scroll when the game restart.

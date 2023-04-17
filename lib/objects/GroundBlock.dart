@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 
 import '../Flutter_Game.dart';
@@ -21,8 +22,10 @@ class GroundBlock extends SpriteComponent with HasGameRef<Flame_Game> {
 
   @override
   void onLoad() {
-    final groundImage = game.images.fromCache('ground.png');
-    sprite = Sprite(groundImage);
+
+    final spritesheet = SpriteSheet(image: game.images.fromCache('terrain.png'), srcSize: Vector2.all(32));
+    // final groundImage = game.images.fromCache('ground.png');
+    sprite = spritesheet.getSprite(0, 3);
     position = Vector2((gridPosition.x * size.x) + xOffset,
         game.size.y - (gridPosition.y * size.y),
     );
@@ -50,6 +53,10 @@ class GroundBlock extends SpriteComponent with HasGameRef<Flame_Game> {
         game.lastBlockXPosition = position.x + size.x -10;
       } 
     }
+
+    if (game.health <= 0) {
+    removeFromParent();
+}
 
     super.update(dt);
   }

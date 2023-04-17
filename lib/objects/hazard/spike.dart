@@ -3,8 +3,7 @@ import 'package:flame/components.dart';
 
 import '../../Flutter_Game.dart';
 
-class Spike extends SpriteComponent
-    with HasGameRef<Flame_Game> {
+class Spike extends SpriteComponent with HasGameRef<Flame_Game> {
   final Vector2 gridPosition;
   double xOffset;
 
@@ -29,6 +28,9 @@ class Spike extends SpriteComponent
     velocity.x = game.objectSpeed;
     position += velocity * dt;
     if (position.x < -size.x) removeFromParent();
+
+    if (position.x < -size.x || game.health <= 0) removeFromParent();
+
     super.update(dt);
   }
 }
