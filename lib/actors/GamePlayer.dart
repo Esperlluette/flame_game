@@ -12,7 +12,7 @@ import '../objects/PlatformBlock.dart';
 
 class GamePlayer extends SpriteAnimationComponent
     with KeyboardHandler, HasGameRef<Flame_Game>, CollisionCallbacks {
-  final double gravity = 15;
+  final double gravity = 10;
   final double jumpSpeed = 600;
   final double terminalvelocity = 150;
 
