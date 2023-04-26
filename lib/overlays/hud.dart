@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 
 import '../Flutter_Game.dart';
@@ -22,7 +23,7 @@ class Hud extends PositionComponent with HasGameRef<Flame_Game> {
   @override
   Future<void>? onLoad() async {
     _scoreTextComponent = TextComponent(
-      text: '${game.starsCollected}',
+      text: '${game.KiwisCollected}',
       textRenderer: TextPaint(
         style: const TextStyle(
           fontSize: 32,
@@ -34,10 +35,12 @@ class Hud extends PositionComponent with HasGameRef<Flame_Game> {
     );
     add(_scoreTextComponent);
 
-    final starSprite = await game.loadSprite('Heart.png');
+    final spriteSheet = SpriteSheet(
+        image: game.images.fromCache('kiwi.png'), srcSize: Vector2.all(32));
+
     add(
       SpriteComponent(
-        sprite: starSprite,
+        sprite: spriteSheet.getSprite(0, 0),
         position: Vector2(game.size.x - 100, 20),
         size: Vector2.all(32),
         anchor: Anchor.center,
@@ -60,7 +63,28 @@ class Hud extends PositionComponent with HasGameRef<Flame_Game> {
 
   @override
   void update(double dt) {
-    _scoreTextComponent.text = '${game.starsCollected}';
+    _scoreTextComponent.text = '${game.KiwisCollected}';
+
     super.update(dt);
   }
 }
+
+// void updateHealthDisplay(Flame_Game game) async {
+//   // Supprimer les composants HeartHealthComponent existants
+//   final hearts = game.components.whereType<HeartHealthComponent>().toList();
+//   for (final heart in hearts) {
+//     await heart.removeFromParent();
+//   }
+
+//   // Ajouter de nouveaux composants HeartHealthComponent en fonction de la valeur actuelle de game.health
+//   for (var i = 1; i <= game.health; i++) {
+//     final positionX = 40 * i;
+//     await game.add(
+//       HeartHealthComponent(
+//         heartNumber: i,
+//         position: Vector2(positionX.toDouble(), 20),
+//         size: Vector2.all(32),
+//       ),
+//     );
+//   }
+// }

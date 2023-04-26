@@ -5,21 +5,24 @@ import 'package:flutter/material.dart';
 
 import '../Flutter_Game.dart';
 
-class Star extends SpriteComponent with HasGameRef<Flame_Game> {
+class Kiwi extends SpriteAnimationComponent with HasGameRef<Flame_Game> {
   final Vector2 gridPosition;
   double xOffset;
 
   final Vector2 velocity = Vector2.zero();
 
-  Star({
+  Kiwi({
     required this.gridPosition,
     required this.xOffset,
   }) : super(size: Vector2.all(64), anchor: Anchor.center);
 
   @override
   void onLoad() {
-    final starImage = game.images.fromCache('heart.png');
-    sprite = Sprite(starImage);
+
+    animation = SpriteAnimation.fromFrameData(game.images.fromCache('kiwi.png'), SpriteAnimationData.sequenced(amount: 17 , stepTime: 0.5 ,textureSize: Vector2.all(32)));
+
+    // final KiwiImage = game.images.fromCache('heart.png');
+    // sprite = Sprite(KiwiImage);
     position = Vector2((gridPosition.x * size.x) + xOffset + (size.x / 2),
         game.size.y - (gridPosition.y * size.y) - (size.y / 2));
     add(RectangleHitbox()..collisionType = CollisionType.passive);

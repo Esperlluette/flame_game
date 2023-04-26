@@ -2,7 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame_game/objects/GroundBlock.dart';
-import 'package:flame_game/objects/Star.dart';
+import 'package:flame_game/objects/Kiwi.dart';
 import 'package:flame_game/objects/hazard/Spike.dart';
 import 'package:flutter/src/services/raw_keyboard.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +19,8 @@ class GamePlayer extends SpriteAnimationComponent
   bool hitByEnemy = false;
 
   bool hasJumped = false;
+
+  bool debug = false;
 
   final Vector2 fromAbove = Vector2(0, -1);
   bool isOnGround = false;
@@ -53,15 +55,12 @@ class GamePlayer extends SpriteAnimationComponent
         position += collisionNormal.scaled(separationDistance);
       }
     }
-    if (other is Star) {
+    if (other is Kiwi) {
       other.removeFromParent();
-      game.starsCollected++;
+      game.KiwisCollected++;
     }
     if (other is Spike) {
       hit();
-      if (game.health <= 0) {
-        // gameOver();
-      }
     }
 
     super.onCollision(intersectionPoints, other);
@@ -80,6 +79,8 @@ class GamePlayer extends SpriteAnimationComponent
             keysPressed.contains(LogicalKeyboardKey.arrowRight))
         ? 1
         : 0;
+
+    debug = (keysPressed.contains(LogicalKeyboardKey.keyP)) ? true : false;
 
     hasJumped = (keysPressed.contains(LogicalKeyboardKey.space) ||
         keysPressed.contains(LogicalKeyboardKey.arrowUp));
@@ -106,20 +107,20 @@ class GamePlayer extends SpriteAnimationComponent
       velocity.x = 0;
     }
 
-    if (position.x + 64 >= game.size.x / 2 && horizontalDirection > 0) {
-      game.scroll = true;
-      if (game.scroll) {
-        velocity.x = -1;
-        game.objectSpeed = -moveSpeed / 2;
-      }
+    if (position.x + 64 >= game.size.x / 3 && horizontalDirection > 0) {
+      print(
+          "pos X :${position.x + 64} game size X :${game.size.x / 2} Horizontal direction : $horizontalDirection");
+      velocity.x = -1;
+      game.objectSpeed = -moveSpeed;
     }
 
-    // If ember fell in pit, then game over.
+    // If duck fell in pit, then game over.
     if (position.y > game.size.y + size.y) {
       game.health = 0;
     }
 
     if (game.health <= 0) {
+      game.calculateScore();
       removeFromParent();
     }
 
@@ -156,8 +157,11 @@ class GamePlayer extends SpriteAnimationComponent
 
   void hit() {
     if (!hitByEnemy) {
-      game.health--;
       hitByEnemy = true;
+      game.health--;
+
+      var hud = game.children.last;
+      hud.remove(hud.children.last);
     }
     add(
       OpacityEffect.fadeOut(

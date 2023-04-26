@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_game/actors/GamePlayer.dart';
@@ -8,22 +7,25 @@ import 'package:flame_game/overlays/hud.dart';
 
 import 'managers/segment_manager.dart';
 import 'objects/GroundBlock.dart';
-import 'objects/Star.dart';
+import 'objects/Kiwi.dart';
 import 'objects/PlatformBlock.dart';
 import 'package:flutter/material.dart';
 
 import 'objects/hazard/Spike.dart';
 
 class Flame_Game extends FlameGame
-    with HasKeyboardHandlerComponents, HasCollisionDetection {
+    with HasKeyboardHandlerComponents, HasCollisionDetection{
   Flame_Game();
   late GamePlayer _duck;
   double objectSpeed = 0.0;
   late double lastBlockXPosition = 0.0;
   late UniqueKey lastBlockKey;
 
-  bool scroll = false;
-  int starsCollected = 0;
+  double distance = 0;
+  late double score = 0;
+
+
+  int KiwisCollected = 0;
   int health = 3;
 
   @override
@@ -37,6 +39,7 @@ class Flame_Game extends FlameGame
       'spike.png',
       'door.png',
       'terrain.png',
+      'kiwi.png'
     ]);
     initializeGame(true);
   }
@@ -60,9 +63,14 @@ class Flame_Game extends FlameGame
   }
 
   void reset() {
-    starsCollected = 0;
+    distance = 0;
+    KiwisCollected = 0;
     health = 3;
     initializeGame(false);
+  }
+
+  void calculateScore(){
+    score = distance+KiwisCollected*10;
   }
 
   @override
@@ -85,8 +93,8 @@ class Flame_Game extends FlameGame
           add(PlatformBlock(
               gridPosition: block.gridPosition, xOffset: xPositionOffset));
           break;
-        case Star:
-          add(Star(
+        case Kiwi:
+          add(Kiwi(
             gridPosition: block.gridPosition,
             xOffset: xPositionOffset,
           ));
@@ -95,10 +103,11 @@ class Flame_Game extends FlameGame
     }
   }
 
+  
+
   @override
   void update(double dt) {
     if (health <= 0) {
-      scroll = false;
       overlays.add('GameOver');
     }
     super.update(dt);

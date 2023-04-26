@@ -4,14 +4,16 @@ A flutter game using Flame engine.
 
 Improvements : 
 - Randomize segments generation using procedural generation. 
+- Save high score.
+- Over the timer increase screen speed.
 
 Known issues : 
-- Hearts HUD not updating when duck takes damages. 
-- Duck slide when the screen scroll
-- the screen does not stop scroll when the game restart.
+- Duck slide when the screen scroll: OK 
+- The screen does not stop scroll when the game restart: OK
+- The duck can jump in the air. 
 
 Todo :
-- Change stars sprite. 
-- Add half hearts sprite. 
-- Double jump heigth
+- Double jump heigth: OK 
 - Accelerating jump speed by 50%
+- Add score calculation 
+- Add start sprite pane. 

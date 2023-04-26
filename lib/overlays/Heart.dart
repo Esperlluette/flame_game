@@ -12,8 +12,6 @@ class HeartHealthComponent extends SpriteGroupComponent<HeartState>
     with HasGameRef<Flame_Game> {
   final int heartNumber;
   
-
-
   HeartHealthComponent({
     required this.heartNumber,
     required super.position,

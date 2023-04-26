@@ -49,7 +49,7 @@ class MainMenu extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-                'Use WASD or Arrow Keys for movement.  Space bar to jump. Collect as many stars as you can and avoid enemies!',
+                'Use Q or D  or Arrow Left / Right for movement.  Space bar to jump. Collect as many stars as you can and avoid enemies!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: whiteTextColor,
