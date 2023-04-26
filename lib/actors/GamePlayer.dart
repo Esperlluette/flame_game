@@ -100,30 +100,21 @@ class GamePlayer extends SpriteAnimationComponent
 
   @override
   void update(double dt) {
-    velocity.x = horizontalDirection * moveSpeed;
-    position += velocity * dt;
+    cannotGoLeft();
+    cannotGoRight();
 
-    if (position.x - 36 <= 0 && horizontalDirection < 0) {
-      velocity.x = 0;
-    }
-
-    if (position.x + 64 >= game.size.x / 3 && horizontalDirection > 0) {
-      print(
-          "pos X :${position.x + 64} game size X :${game.size.x / 2} Horizontal direction : $horizontalDirection");
-      velocity.x = -1;
-      game.objectSpeed = -moveSpeed;
-    }
+    move(dt);
+    // if (position.x - 36 <= 0 && horizontalDirection < 0) {
+    //   velocity.x = 0;
+    // }
 
     // If duck fell in pit, then game over.
     if (position.y > game.size.y + size.y) {
       game.health = 0;
     }
 
-    if (game.health <= 0) {
-      game.calculateScore();
-      removeFromParent();
-    }
-
+    printPose();
+    gameOver();
     flipSprite();
     jump();
 
@@ -174,5 +165,38 @@ class GamePlayer extends SpriteAnimationComponent
           hitByEnemy = false;
         },
     );
+  }
+
+  void printPose() {
+    if (position.x + 64 >= game.size.x / 3 && horizontalDirection > 0) {
+      print(
+          "pos X :${position.x + 64} game size X :${game.size.x / 2} Horizontal direction : $horizontalDirection");
+      velocity.x = -1;
+      game.objectSpeed = -moveSpeed;
+    }
+  }
+
+  void gameOver() {
+    if (game.health <= 0) {
+      game.calculateScore();
+      removeFromParent();
+    }
+  }
+
+  void cannotGoLeft() {
+    if (position.x <= 20 && horizontalDirection == -1) {
+      horizontalDirection = 0;
+    }
+  }
+
+  void move(double dt) {
+    velocity.x = horizontalDirection * moveSpeed;
+    position += velocity * dt;
+  }
+
+  void cannotGoRight() {
+    if (position.x >= 1200 && horizontalDirection == 1) {
+      horizontalDirection = 0;
+    }
   }
 }

@@ -8,12 +8,15 @@ Improvements :
 - Over the timer increase screen speed.
 
 Known issues : 
-- Duck slide when the screen scroll: OK 
-- The screen does not stop scroll when the game restart: OK
+- Duck slide when the screen scroll: 
+- The screen does not stop scroll when the game restart:
 - The duck can jump in the air. 
 
 Todo :
-- Double jump heigth: OK 
 - Accelerating jump speed by 50%
 - Add score calculation 
 - Add start sprite pane. 
+
+bug fixes: 
+- Heart hud
+- duck now cannot jump in the airs in both side of the screen. 
